@@ -1,3 +1,5 @@
+The container is not working yet.
+
 A lightweight, secure, and automated **Nmap** container image built on Alpine Linux. This project is designed to run Nmap without requiring root privileges on your host OS while supporting both Intel and Apple Silicon (M1/M2/M3) Macs.
 
 ## 🚀 Key Features
