@@ -1,6 +1,9 @@
 # Use a light base
 FROM alpine:latest
 
+# Force an upgrade of all packages to catch security fixes
+RUN apk update && apk upgrade --no-cache
+
 # Install nmap and libcap for non-root permissions
 RUN apk add --no-cache nmap libcap
 
