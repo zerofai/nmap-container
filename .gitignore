@@ -1,0 +1,41 @@
+# --- macOS System Files ---
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# --- Docker ---
+# Ignore local environment files containing secrets
+.env
+.env.local
+.env.*.local
+
+# Ignore docker-compose override files if you use them for local tweaks
+docker-compose.override.yml
+
+# If you mount volumes to a local folder, ignore the data
+/data/
+/db_data/
+
+# --- IDEs / Editors ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Common Build Artifacts ---
+node_modules/
+__pycache__/
+*.pyc
+dist/
+build/
+.cache/
+
+# --- Logs ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
