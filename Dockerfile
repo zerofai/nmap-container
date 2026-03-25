@@ -1,24 +1,29 @@
-# Use a light base
+# https://hub.docker.com/_/alpine
 FROM alpine:latest
 
-# Force an upgrade of all packages to catch security fixes
-RUN apk update && apk upgrade --no-cache
+# 1. Install runtime dependencies and libcap for non-root permissions
+RUN apk add --update --no-cache \
+            ca-certificates \
+            libgcc libstdc++ \
+            libcrypto3 libssl3 \
+            libpcap \
+            libssh2 \
+            lua5.4-libs \
+            zlib \
+            libcap \
+ && update-ca-certificates \
+ && rm -rf /var/cache/apk/*
 
-# Install nmap and libcap for non-root permissions
-RUN apk add --no-cache nmap libcap
+# 2.Install Nmap from package manager (latest version available in Alpine repositories)
+RUN apk add --update --no-cache nmap
 
-# Create a non-root user
-RUN addgroup -S nmapgroup && adduser -S nmapuser -G nmapgroup
+# 3. Security Hardening: Grant raw socket capabilities & Create non-root user [cite: 1, 2]
+# This allows the non-root user to perform SYN scans (-sS) and OS detection (-O)
+RUN setcap cap_net_raw,cap_net_admin,cap_net_bind_service+eip /usr/bin/nmap \
+ && addgroup -S nmapgroup && adduser -S nmapuser -G nmapgroup
 
-# Grant nmap the ability to use raw sockets (required for -sS, -O, etc.) 
-# without needing to be the root user inside the container.
-RUN setcap cap_net_raw,cap_net_admin,cap_net_bind_service+eip /usr/bin/nmap
-
-# Switch to the non-root user
+# 4. Final Environment Setup
 USER nmapuser
-
-# Set the working directory
 WORKDIR /home/nmapuser
 
-# Set nmap as the entrypoint
-ENTRYPOINT ["nmap"]
+ENTRYPOINT ["/usr/bin/nmap"]
